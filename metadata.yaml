@@ -1,4 +1,6 @@
 homepage: 'https://stape.io/'
 versions:
+  - sha: 3030cb01c73981e51eb4a921ed69fdbb1f294318
+    changeNotes: Improve verification of required fields.
   - sha: 7c088483d63b3b4d6a3ac395d70d44f66d6ba95f
     changeNotes: Initial release.
