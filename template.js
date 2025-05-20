@@ -412,7 +412,7 @@ function areThereRequiredFieldsMissing(requestPath, payload) {
     '/track': ['event']
   };
 
-  const commonFieldsMissing = ['userId', 'anonymousId'].every((p) => !isValidValue(payload[p]));
+  const commonFieldsMissing = requiredCommonFields.every((p) => !isValidValue(payload[p]));
   if (commonFieldsMissing) return requiredCommonFields;
 
   const fieldsMissing = (requiredFieldsByRequestPath[requestPath] || []).some(

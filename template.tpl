@@ -1790,7 +1790,7 @@ function areThereRequiredFieldsMissing(requestPath, payload) {
     '/track': ['event']
   };
 
-  const commonFieldsMissing = ['userId', 'anonymousId'].every((p) => !isValidValue(payload[p]));
+  const commonFieldsMissing = requiredCommonFields.every((p) => !isValidValue(payload[p]));
   if (commonFieldsMissing) return requiredCommonFields;
 
   const fieldsMissing = (requiredFieldsByRequestPath[requestPath] || []).some(
@@ -3009,5 +3009,5 @@ setup: "const Promise = require('Promise');\nconst JSON = require('JSON');\ncons
 
 ___NOTES___
 
-Created on 5/19/2025, 9:48:36 AM
+Created on 5/20/2025, 5:14:25 PM
 
