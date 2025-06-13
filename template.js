@@ -8,13 +8,15 @@ const logToConsole = require('logToConsole');
 const getRequestHeader = require('getRequestHeader');
 const makeString = require('makeString');
 const makeInteger = require('makeInteger');
+const makeNumber = require('makeNumber');
 const sendHttpRequest = require('sendHttpRequest');
 const setCookie = require('setCookie');
 const getType = require('getType');
 const BigQuery = require('BigQuery');
 const toBase64 = require('toBase64');
 
-/**********************************************************************************************/
+/*==============================================================================
+==============================================================================*/
 
 const traceId = getRequestHeader('trace-id');
 
@@ -51,8 +53,9 @@ if (data.useOptimisticScenario) {
   return data.gtmOnSuccess();
 }
 
-/**********************************************************************************************/
-// Vendor related functions
+/*==============================================================================
+  Vendor related functions
+==============================================================================*/
 
 function addCommonProperties(data, eventData, mappedData) {
   if (data.messageId) mappedData.messageId = data.messageId;
@@ -329,6 +332,23 @@ function addEventProperties(data, eventData, mappedData) {
     method: 'share_via'
   };
 
+  const castGAProperty = (property, value) => {
+    const propertiesTypes = {
+      transaction_id: 'string',
+      shipping: 'number',
+      tax: 'number'
+    };
+
+    switch (propertiesTypes[property]) {
+      case 'string':
+        return makeString(value);
+      case 'number':
+        return makeNumber(value);
+    }
+
+    return value;
+  };
+
   let currencyFromItems;
   let valueFromItems;
   if (eventData.items && eventData.items[0]) {
@@ -349,25 +369,27 @@ function addEventProperties(data, eventData, mappedData) {
       if (item.image_url) product.image_url = item.image_url;
       if (item.quantity) product.quantity = makeInteger(item.quantity);
       if (item.coupon) product.coupon = item.coupon;
-      if (item.index) product.position = item.index;
-      if (item.price) {
-        product.price = makeString(item.price);
-        valueFromItems += item.quantity ? item.quantity * item.price : item.price;
+      if (item.index) product.position = makeInteger(item.index);
+      if (isValidValue(item.price)) {
+        product.price = makeNumber(item.price);
+        const quantity = makeInteger(item.quantity);
+        valueFromItems += quantity ? quantity * product.price : product.price;
       }
       eventProperties.products.push(product);
     });
   }
 
-  if (isValidValue(eventData.value)) eventProperties.revenue = eventData.value;
+  if (isValidValue(eventData.value)) eventProperties.revenue = makeNumber(eventData.value);
   else if (isValidValue(valueFromItems)) eventProperties.revenue = valueFromItems;
 
   const currency = eventData.currency || currencyFromItems;
   if (currency) eventProperties.currency = currency;
 
   for (const gaProperty in gaToEcommerceProperties) {
-    if (!isValidValue(eventData[gaProperty])) continue;
+    const value = eventData[gaProperty];
+    if (!isValidValue(value)) continue;
     const property = gaToEcommerceProperties[gaProperty];
-    eventProperties[property] = eventData[gaProperty];
+    eventProperties[property] = castGAProperty(gaProperty, value);
   }
 
   // UI Fields
@@ -485,8 +507,9 @@ function sendRequest(requestData) {
   );
 }
 
-/**********************************************************************************************/
-// Helpers
+/*==============================================================================
+  Helpers
+==============================================================================*/
 
 function random() {
   return generateRandom(1000000000000000, 10000000000000000) / 10000000000000000;
@@ -538,7 +561,6 @@ function log(rawDataToLog) {
   if (determinateIsLoggingEnabled()) logDestinationsHandlers.console = logConsole;
   if (determinateIsLoggingEnabledForBigQuery()) logDestinationsHandlers.bigQuery = logToBigQuery;
 
-  // Key mappings for each log destination
   const keyMappings = {
     // No transformation for Console is needed.
     bigQuery: {
@@ -561,10 +583,10 @@ function log(rawDataToLog) {
 
     const mapping = keyMappings[logDestination];
     const dataToLog = mapping ? {} : rawDataToLog;
-    // Map keys based on the log destination
+
     if (mapping) {
       for (const key in rawDataToLog) {
-        const mappedKey = mapping[key] || key; // Fallback to original key if no mapping exists
+        const mappedKey = mapping[key] || key;
         dataToLog[mappedKey] = rawDataToLog[key];
       }
     }
@@ -584,18 +606,12 @@ function logToBigQuery(dataToLog) {
     tableId: data.logBigQueryTableId
   };
 
-  // timestamp is required.
   dataToLog.timestamp = getTimestampMillis();
 
-  // Columns with type JSON need to be stringified.
   ['request_body', 'response_headers', 'response_body'].forEach((p) => {
-    // GTM Sandboxed JSON.parse returns undefined for malformed JSON but throws post-execution, causing execution failure.
-    // If fixed, could use: dataToLog[p] = JSON.stringify(JSON.parse(dataToLog[p]) || dataToLog[p]);
     dataToLog[p] = JSON.stringify(dataToLog[p]);
   });
 
-  // assertApi doesn't work for 'BigQuery.insert()'. It's needed to convert BigQuery into a function when testing.
-  // Ref: https://gtm-gear.com/posts/gtm-templates-testing/
   const bigquery =
     getType(BigQuery) === 'function' ? BigQuery() /* Only during Unit Tests */ : BigQuery;
   bigquery.insert(connectionInfo, [dataToLog], { ignoreUnknownValues: true });
