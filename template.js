@@ -1,18 +1,18 @@
-const getAllEventData = require('getAllEventData');
-const JSON = require('JSON');
+const BigQuery = require('BigQuery');
 const generateRandom = require('generateRandom');
-const getCookieValues = require('getCookieValues');
-const getTimestampMillis = require('getTimestampMillis');
+const getAllEventData = require('getAllEventData');
 const getContainerVersion = require('getContainerVersion');
-const logToConsole = require('logToConsole');
+const getCookieValues = require('getCookieValues');
 const getRequestHeader = require('getRequestHeader');
-const makeString = require('makeString');
+const getTimestampMillis = require('getTimestampMillis');
+const getType = require('getType');
+const JSON = require('JSON');
+const logToConsole = require('logToConsole');
 const makeInteger = require('makeInteger');
 const makeNumber = require('makeNumber');
+const makeString = require('makeString');
 const sendHttpRequest = require('sendHttpRequest');
 const setCookie = require('setCookie');
-const getType = require('getType');
-const BigQuery = require('BigQuery');
 const toBase64 = require('toBase64');
 
 /*==============================================================================

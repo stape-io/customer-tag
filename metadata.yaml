@@ -1,4 +1,5 @@
 homepage: 'https://stape.io/'
+documentation: 'https://github.com/stape-io/customer-tag'
 versions:
   - sha: 55d157a44bfc4a141416d45e5a5c5a9473ff6bca
     changeNotes: Force type casting on some auto-mapped properties. Improve tests.
