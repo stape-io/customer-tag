@@ -21,7 +21,7 @@ The **Customer.io Tag for GTM Server-Side** allows you to send events, page view
 ## Supported Event Name Mapping
 
 - For **Track Event**, you can:
-  - Use **Standard** semantic event names from [Customer.io's documented list](https://docs.customer.io/api/cdp/#section/Semantic-events) (only for *Ecommerce* and *Mobile App* are listed).
+  - Use **Standard** semantic event names from [Customer.io's documented list](https://docs.customer.io/api/cdp/#section/Semantic-events) (only for _Ecommerce_ and _Mobile App_ are listed).
   - **Inherit** event names from client events (with partial mapping from GA4).
   - Define **Custom** event names manually.
 
@@ -41,6 +41,10 @@ The **Customer.io Tag for GTM Server-Side** allows you to send events, page view
 - **IP redaction**: Optionally redact visitor IP addresses for privacy.
 - **Optimistic scenario**: Option to fire success callback immediately without waiting for API response.
 - **Detailed logging**: Logs request and response details to console and BigQuery for troubleshooting.
+
+## Useful links:
+
+- [Step-by-step guide on how to configure Customer.io tag](https://stape.io/helpdesk/documentation/customer-io-tag)
 
 ## Open Source
 
