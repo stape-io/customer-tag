@@ -16,7 +16,6 @@ The **Customer.io Tag for GTM Server-Side** allows you to send events, page view
 5. Provide **User ID** or **Anonymous ID** (anonymous IDs can be generated and stored automatically via cookie on web).
 6. Configure relevant **event, user, group, page, or screen properties** depending on your chosen action.
 7. Optionally set **Consent Settings** to only send data when marketing consent is granted.
-8. (Optional) Enable **logging** to Console and/or BigQuery for debugging and monitoring.
 
 ## Supported Event Name Mapping
 
@@ -40,7 +39,6 @@ The **Customer.io Tag for GTM Server-Side** allows you to send events, page view
 - **Page and screen view properties**: Customize and extend page or screen metadata.
 - **IP redaction**: Optionally redact visitor IP addresses for privacy.
 - **Optimistic scenario**: Option to fire success callback immediately without waiting for API response.
-- **Detailed logging**: Logs request and response details to console and BigQuery for troubleshooting.
 
 ## Useful links:
 

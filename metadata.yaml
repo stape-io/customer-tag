@@ -1,6 +1,8 @@
 homepage: 'https://stape.io/'
 documentation: 'https://github.com/stape-io/customer-tag'
 versions:
+  - sha: d7220610401ee4adc9756bc695c1c3a5ba2eeb8f
+    changeNotes: Logging removal.
   - sha: df5d9965950c4381d3066e71d44449b8903ccfa4
     changeNotes: Updated consent section.
   - sha: 55d157a44bfc4a141416d45e5a5c5a9473ff6bca
